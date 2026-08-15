@@ -1,0 +1,15 @@
+// Copyright 2026 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// https://wicg.github.io/cross-origin-storage/#the-crossoriginstoragemanager-interface
+
+dictionary CrossOriginStorageRequestFileHandleOptions {
+    boolean create = false;
+
+    // Omitted means same-site origins only. "*" means any origin, subject to
+    // availability gating. A (possibly empty) sequence means exactly those
+    // origins. Note that an explicit empty sequence is a real, empty list --
+    // it is not equivalent to omitting the member.
+    (DOMString or sequence<DOMString>) origins;
+};

@@ -1,0 +1,13 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# The packed Public Hash List ships as a loose data file next to the browser
+# binary rather than being compiled in. At ~9.5 MiB it is large enough that
+# embedding it would make one translation unit (or the resource pak)
+# responsible for a multi-MB blob; loading it lazily on first lookup costs one
+# fallible file read instead, which fails safe to "nothing loaded".
+copy("public_hash_list") {
+  sources = [ "public_hash_list.bin" ]
+  outputs = [ "$root_out_dir/cross_origin_storage_public_hash_list.bin" ]
+}

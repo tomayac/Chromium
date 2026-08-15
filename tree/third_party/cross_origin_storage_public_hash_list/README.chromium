@@ -1,0 +1,62 @@
+Name: Cross-Origin Storage Public Hash List
+Short Name: cross-origin-storage-public-hash-list
+URL: https://github.com/WICG/cross-origin-storage/tree/main/public-hash-list
+Version: 2026-08-12T09:05:29Z
+Date: 2026-08-12
+Revision: 1a13f22
+License: MPL-2.0
+License File: LICENSE
+Security Critical: yes
+Shipped: yes
+CPEPrefix: unknown
+
+Description:
+The Public Hash List (PHL) is the vendor-neutral allowlist of resource digests
+that Cross-Origin Storage consults before disclosing a "*"-scoped entry to an
+origin that did not store it. A hash is admitted upstream only once it clears a
+k-anonymity-style ubiquity bar, so that confirming its presence in a shared
+cache reveals nothing about an individual user. Without this gate, "*"-scoped
+disclosure would be a cross-site probing oracle.
+
+See https://wicg.github.io/cross-origin-storage/#public-hash-list
+
+Local Modifications:
+public_hash_list.bin is a re-encoding, not a copy: generate_public_hash_list.py
+downloads the upstream ~58 MB text file (via GitHub's LFS media endpoint),
+verifies it against the .sha256 published beside it, and re-packs the digests
+from the adopted sections as sorted, contiguous 32-byte binary records. This is
+~6x smaller than the text form and supports an O(log n) binary search without
+the memory cost of a hash set.
+
+All three upstream sections are adopted: the core and manual sections, which a
+user agent MUST treat as eligible, and the Hugging Face model-hub section,
+which a user agent SHOULD include. See _ADOPTED_SECTIONS in the generator for
+why the optional section is included.
+
+Update instructions:
+The PHL is a rolling release, and the governance model it is modelled on (the
+Public Suffix List) depends on consumers actually keeping current. A build is
+only ever as current as the last time this was rolled, so "we integrated the
+PHL" and "we keep the PHL current" are two separate milestones.
+
+  # Is a roll needed? Compares the committed upstream_oid in
+  # public_hash_list.metadata.json against upstream's Git LFS pointer. This is
+  # a few hundred bytes, not the ~58 MB list, so it is cheap to run often.
+  # Exit 0: up to date. 1: roll needed. 2: could not tell.
+  generate_public_hash_list.py --check
+
+  # Do the roll: fetch, verify against the published .sha256, re-pack, and
+  # rewrite public_hash_list.bin, VERSION and public_hash_list.metadata.json.
+  generate_public_hash_list.py
+
+WHAT IS NOT AUTOMATED YET: nothing schedules the above. The scripting is in
+place for a weekly job (--check to decide, then a full run plus an upload to
+produce a CL), but the scheduled builder and autoroller configuration live in
+infra/config rather than in this directory, and have not been created. Until
+they are, this list only refreshes when somebody runs the generator by hand,
+which is the failure mode the upstream implementation notes explicitly call
+out as inadequate rather than as an acceptable third option.
+
+TODO(tomayac): create the scheduled roll (infra-side), and consider moving to
+Component Updater so a shipped Chrome can pick up a refreshed list without
+waiting for a milestone.

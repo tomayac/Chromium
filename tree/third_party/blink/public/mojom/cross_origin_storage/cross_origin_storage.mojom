@@ -1,0 +1,60 @@
+// Copyright 2026 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+module blink.mojom;
+
+import "third_party/blink/public/mojom/file_system_access/file_system_access_error.mojom";
+import "third_party/blink/public/mojom/file_system_access/file_system_access_file_handle.mojom";
+import "url/mojom/origin.mojom";
+
+// A content identifier for a resource stored in Cross-Origin Storage (COS).
+// https://wicg.github.io/cross-origin-storage/#hashes
+struct CrossOriginStorageHash {
+  // Names a hash algorithm recognized by the Web Crypto API, e.g. "SHA-256".
+  // Compared ASCII case-insensitively.
+  string algorithm;
+
+  // A lowercase hexadecimal encoding of a digest produced by `algorithm`.
+  // For "SHA-256" this is 64 characters long.
+  string value;
+};
+
+// The declared sharing scope a create request asks an entry's `origins` to be
+// upgraded to. https://wicg.github.io/cross-origin-storage/#cos-entries
+enum CrossOriginStorageScope {
+  // `options.origins` was omitted: same-site origins only. Never narrows an
+  // existing entry.
+  kSameSite,
+  // `options.origins` was a (possibly empty) list of origin strings.
+  kList,
+  // `options.origins` was "*": any origin, subject to availability gating.
+  kWildcard,
+};
+
+// Lets a renderer obtain handles into the browser-wide, content-addressable
+// Cross-Origin Storage cache. One instance is bound per execution context
+// (document or worker); the browser associates it with that context's origin
+// rather than trusting an origin sent over this pipe.
+//
+// https://wicg.github.io/cross-origin-storage/#the-crossoriginstoragemanager-interface
+interface CrossOriginStorageManager {
+  // Implements requestFileHandle(). On success returns a handle addressing the
+  // COS entry for `hash`; the returned handle only ever supports AsBlob() and
+  // CreateFileWriter(), since a COS entry has no name, no parent directory,
+  // and no move/remove semantics.
+  //
+  // `scope` and `origins` are only meaningful when `create` is true; `origins`
+  // is only meaningful when `scope` is kList (where an empty list is a real,
+  // explicit empty list, distinct from kSameSite).
+  //
+  // The browser re-validates `hash` and `origins` regardless of any validation
+  // the renderer already performed, since a compromised renderer can speak
+  // this interface directly and `hash` is used to build filesystem paths.
+  RequestFileHandle(CrossOriginStorageHash hash,
+                    bool create,
+                    CrossOriginStorageScope scope,
+                    array<url.mojom.Origin> origins) => (
+      FileSystemAccessError result,
+      pending_remote<FileSystemAccessFileHandle>? file_handle);
+};

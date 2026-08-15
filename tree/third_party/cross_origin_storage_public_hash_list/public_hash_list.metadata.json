@@ -1,0 +1,16 @@
+{
+  "adopted_sections": [
+    "SHA-256",
+    "SHA-256 HUGGING-FACE",
+    "SHA-256 MANUAL"
+  ],
+  "digest_count": 311494,
+  "packed_sha256": "1bc0a5fa5ea0e8e5f7e847f26e2c198641f0fb711e49ed60e4dddc44b0bb5132",
+  "section_counts": {
+    "SHA-256": 292216,
+    "SHA-256 HUGGING-FACE": 19277,
+    "SHA-256 MANUAL": 1
+  },
+  "upstream_oid": "f6139767a196fd139c30c36a4aa043fe6b730336bae904260ab8d1005b8be835",
+  "upstream_version": "2026-08-12T09:05:29Z"
+}

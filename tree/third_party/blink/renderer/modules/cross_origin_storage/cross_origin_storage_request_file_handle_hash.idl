@@ -1,0 +1,14 @@
+// Copyright 2026 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// https://wicg.github.io/cross-origin-storage/#the-crossoriginstoragemanager-interface
+
+dictionary CrossOriginStorageRequestFileHandleHash {
+    // A lowercase hexadecimal digest. Its length depends on `algorithm`; for
+    // "SHA-256" it is 64 characters.
+    required DOMString value;
+
+    // Names a hash algorithm recognized by the Web Crypto API, e.g. "SHA-256".
+    required DOMString algorithm;
+};
