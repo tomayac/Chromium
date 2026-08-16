@@ -57,8 +57,10 @@ the gate fails closed.
 Implemented: the imperative `navigator.crossOriginStorage` API — the three
 disclosure scopes (same-site, an explicit origins list, and `'*'`), Public Hash
 List availability gating, GREASE'ing, visibility upgrades, per-origin quota and
-eviction, rate limiting, and Permissions Policy integration. Available in
-windows, dedicated workers, shared workers and service workers.
+eviction, rate limiting, and Permissions Policy integration. Handles are
+transferable with `postMessage()` to a same-origin worker or frame, carrying
+their readability with them. Available in windows, dedicated workers, shared
+workers and service workers.
 
 Not implemented, because each is defined in its own host-language
 specification: the declarative HTML `crossoriginstorage` attribute, the CSS
@@ -80,7 +82,7 @@ Chromium is BSD-3-Clause plus a large number of third-party licenses; see
 and `chrome://credits` in the build itself. The bundled
 `cross_origin_storage_public_hash_list.bin` is derived from the
 [WICG Public Hash List](https://github.com/WICG/cross-origin-storage/tree/main/public-hash-list),
-which is MPL-2.0.
+which is Apache-2.0.
 
 ## Links
 
