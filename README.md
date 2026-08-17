@@ -7,6 +7,11 @@ setting any flags.
 
 **[→ Download the latest build](../../releases/latest)** (Linux x86_64)
 
+The API is **off by default**. After downloading, enable it in
+`about://flags` ("Cross-Origin Storage") and restart, or launch with
+`./chrome --enable-features=CrossOriginStorage`. Without that,
+`navigator.crossOriginStorage` is `undefined`.
+
 ## The code
 
 The implementation is not hosted here. Chromium is reviewed on Gerrit rather
@@ -22,12 +27,11 @@ ready for review yet. Comments belong on the CL.
 ```
 tar -xzf chromium-cos-linux-x64.tar.gz
 cd chromium-cos
-./chrome
+./chrome --enable-features=CrossOriginStorage
 ```
 
-No command-line flags are needed. `navigator.crossOriginStorage` is a
-secure-context API, so test over `https://` or on `http://localhost` /
-`http://127.0.0.1`.
+`navigator.crossOriginStorage` is a secure-context API, so test over
+`https://` or on `http://localhost` / `http://127.0.0.1`.
 
 From DevTools on any `https://` page:
 
