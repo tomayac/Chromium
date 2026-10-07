@@ -41,12 +41,12 @@ const d = await crypto.subtle.digest('SHA-256', bytes);
 const value = [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('');
 const hash = {algorithm: 'SHA-256', value};
 
-const h = await navigator.crossOriginStorage.requestFileHandle(hash, {create: true});
+const h = await navigator.crossOriginStorage.getFileHandle(hash, {create: true});
 const w = await h.createWritable();
 await w.write(new Blob([bytes]));
 await w.close();
 
-const f = await (await navigator.crossOriginStorage.requestFileHandle(hash)).getFile();
+const f = await (await navigator.crossOriginStorage.getFileHandle(hash)).getFile();
 console.log(await f.text());   // "hello cos"
 ```
 
